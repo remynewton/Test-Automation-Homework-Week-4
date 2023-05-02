@@ -93,8 +93,15 @@ class PoliceStation {
         public int size() {
             return size;
         }
-    }           
+    }
+}
+```
 
+I also made a Main class and put my main method there instead of just having it in the PoliceStation class. Here's the code:
+```
+import java.util.*;
+
+public class Main extends PoliceStation {
     public static void main(String[] args) {
         Officer officer1 = new Officer("John Doe", "06/12/1981", "123 Main St", 12345, "Patrol");
         List<String> trainings1 = Arrays.asList("Patrol");
@@ -139,11 +146,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.IllegalArgumentException;
 
-public class Jail {
+public class Jail implements IJail {
     private ArrayList<Criminal> inmates = new ArrayList<>();
     private int capacity;
     protected static List<Jail> jails = new ArrayList<>();
     protected static int totalJails;
+    private static final HoldingCell holdingCell = new HoldingCell();
 
     public Jail(int capacity) {
         if (capacity < 1) {
@@ -162,10 +170,12 @@ public class Jail {
         return jails;
     }
 
+    @Override
     public ArrayList<Criminal> getInmates() {
         return inmates;
     }
 
+    @Override
     public void setInmates(ArrayList<Criminal> inmates) {
         this.inmates = inmates;
     }
@@ -178,6 +188,7 @@ public class Jail {
         this.capacity = capacity;
     }
 
+    @Override
     public void addInmate(Criminal criminal) {
         try {
             if (inmates.size() < capacity) {
@@ -187,10 +198,11 @@ public class Jail {
             }
         } catch (JailFullException e) {
             System.out.println(e.getMessage());
-            HoldingCell.addInmate(criminal);
+            holdingCell.addInmate(criminal);
         }
     }    
 
+    @Override
     public boolean removeInmate(Criminal criminal) throws InmateNotFoundException {
         if (inmates.remove(criminal)) {
             return true;
@@ -209,7 +221,7 @@ public class Jail {
                     jail.removeInmate(criminal);
                 }
             }
-            Jail.HoldingCell.removeInmate(criminal);
+            holdingCell.removeInmate(criminal);
             throw new InmateNotFoundException("The inmate has been removed from all jails, including the holding cell.");
         } else if (input.equals("no")) {
             return false;
@@ -230,38 +242,53 @@ public class Jail {
             super("This jail is at full capacity! The inmate will be kept in holding for now.");
         }
     }    
+}
+```
 
-    public static final class HoldingCell {
-        private static ArrayList<Criminal> inmates = new ArrayList<>();
-        private static int capacity;
-    
-        public static ArrayList<Criminal> getInmates() {
-            return inmates;
-        }
-    
-        public static void setInmates(ArrayList<Criminal> inmates) {
-            HoldingCell.inmates = inmates;
-        }
-    
-        public int getCapacity() {
-            return capacity;
-        }
-    
-        public void setCapacity(int capacity) {
-            HoldingCell.capacity = capacity;
-        }
-    
-        public static boolean addInmate(Criminal criminal) {
-            if (inmates.size() < capacity) {
-                inmates.add(criminal);
-                return true;
-            }
-            return false;
-        }
-    
-        public static boolean removeInmate(Criminal criminal) {
-            return inmates.remove(criminal);
-        }
+I also made HoldingCell.java and moved my code for the holding cell from Jail.java to there. I made an interface called IJail.java so that I wouldn't have to repeat myself constantly.
+
+Here's the code for HoldingCell.java:
+```
+import java.util.ArrayList;
+
+public final class HoldingCell implements IJail {
+    private ArrayList<Criminal> inmates = new ArrayList<>();
+
+    HoldingCell() {
+        // private constructor to prevent instantiation
     }
+
+    @Override
+    public void addInmate(Criminal criminal) {
+        inmates.add(criminal);
+    }
+
+    @Override
+    public boolean removeInmate(Criminal criminal) {
+        return inmates.remove(criminal);
+    }
+
+    @Override
+    public ArrayList<Criminal> getInmates() {
+        return inmates;
+    }
+
+    @Override
+    public void setInmates(ArrayList<Criminal> inmates) {
+        this.inmates = inmates;
+    }
+}
+```
+
+Finally, here's the code for IJail.java:
+```
+import java.util.ArrayList;
+
+public interface IJail {
+    void addInmate (Criminal criminal);
+    boolean removeInmate(Criminal criminal) throws Jail.InmateNotFoundException;
+    ArrayList<Criminal> getInmates();
+    void setInmates(ArrayList<Criminal> inmates);
+
 }
 ```
