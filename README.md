@@ -292,3 +292,15 @@ public interface IJail {
 
 }
 ```
+
+# Part 2
+
+This was the prompt for the homework:
+
+Practical tasks:
+Move all projects to Maven.
+Build jar file and deploy to the local repository.
+Add and use 2 Plugins.
+Run mvn for different phases from the Maven lifecycle. Check the result.
+
+I have mostly done that, using the log4j jar files, though my log4j code is still not working exactly how I'd like it to.
