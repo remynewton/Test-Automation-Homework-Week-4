@@ -305,6 +305,6 @@ Run mvn for different phases from the Maven lifecycle. Check the result.
 
 I have mostly done that, using the log4j jar files, though my log4j code is still not working exactly how I'd like it to.
 
-*THE NEW CODE CAN BE FOUND IN THE hw FOLDER*
+**THE NEW CODE CAN BE FOUND IN THE hw FOLDER**
 
 I didn't know how to upload a Maven project here and I guess I need to show that I did implement Maven.
